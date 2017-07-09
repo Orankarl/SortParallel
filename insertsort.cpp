@@ -20,16 +20,18 @@ typedef struct Region
 }Region;
 
 vector<int> InsertSortParallel(int N, int *p);
-vector<int> InsertVectorSort(vector<int> &vec);
+int* InsertSort(int N, int *p);
+int* InsertSortSerial(int N, int *p);
 
 int main() {
 	int *p = new int[MAX_NUM];//p用作并行插入排序数据
-	vector<int> v(MAX_NUM);//q用作串行插入排序数据
+	int *q = new int[MAX_NUM];//q用作串行插入排序数据
 	srand(time(NULL));
 	for (int i = 0; i < MAX_NUM; i++) {
-		v[i] = p[i] = rand() % BOUNDARY;
-	}InsertVectorSort(v);
+		q[i] = p[i] = rand() % BOUNDARY;
+	}
 	InsertSortParallel(MAX_NUM, p);
+	InsertSortSerial(MAX_NUM, q);
 	
 	return 0;
 }
@@ -44,6 +46,22 @@ int* InsertSort(int N, int *p)//插入排序
 			p[j - 1] = temp;
 		}
 	}
+	return p;
+}
+
+int* InsertSortSerial(int N, int *p)//插入排序
+{
+	int start = clock();
+	int temp;
+	for (int i = 1; i < N; i++) {
+		for (int j = i; (j > 0) && (p[j] < p[j - 1]); j--) {
+			temp = p[j];
+			p[j] = p[j - 1];
+			p[j - 1] = temp;
+		}
+	}
+	int end = clock();
+	printf("The time of InsertSortSerial is:%lf\n", (double)(end - start)/CLOCKS_PER_SEC);
 	return p;
 }
 
